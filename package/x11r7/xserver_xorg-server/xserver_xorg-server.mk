@@ -263,4 +263,5 @@ define XSERVER_XORG_SERVER_INSTALL_INIT_SYSV
 		$(TARGET_DIR)/etc/init.d/S40xorg
 endef
 
+XSERVER_XORG_SERVER_CONF_OPTS += --enable-glx
 $(eval $(autotools-package))
