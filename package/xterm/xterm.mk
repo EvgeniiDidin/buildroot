@@ -12,7 +12,8 @@ XTERM_LICENSE = MIT
 XTERM_LICENSE_FILES = version.c
 XTERM_CONF_OPTS = --enable-256-color \
 	--x-includes=$(STAGING_DIR)/usr/include \
-	--x-libraries=$(STAGING_DIR)/usr/lib
+	--x-libraries=$(STAGING_DIR)/usr/lib \
+	--disable-regex
 
 # Avoid freetype2 path poisoning by imake
 XTERM_CONF_ENV = ac_cv_path_IMAKE=""
