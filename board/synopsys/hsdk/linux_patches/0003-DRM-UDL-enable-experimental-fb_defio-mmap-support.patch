@@ -1,0 +1,26 @@
+From 47cfb0c92560fb58fa5d4546d8cada42505606a8 Mon Sep 17 00:00:00 2001
+From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Date: Thu, 4 Oct 2018 20:42:14 +0300
+Subject: [PATCH 3/3] DRM: UDL: enable experimental fb_defio mmap support
+
+Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+---
+ drivers/gpu/drm/udl/udl_fb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/udl/udl_fb.c b/drivers/gpu/drm/udl/udl_fb.c
+index d5583190f3e4..50909b893651 100644
+--- a/drivers/gpu/drm/udl/udl_fb.c
++++ b/drivers/gpu/drm/udl/udl_fb.c
+@@ -25,7 +25,7 @@
+ 
+ #define DL_DEFIO_WRITE_DELAY    (HZ/20) /* fb_deferred_io.delay in jiffies */
+ 
+-static int fb_defio = 0;  /* Optionally enable experimental fb_defio mmap support */
++static int fb_defio = 1;  /* Optionally enable experimental fb_defio mmap support */
+ static int fb_bpp = 16;
+ 
+ module_param(fb_bpp, int, S_IWUSR | S_IRUSR | S_IWGRP | S_IRGRP);
+-- 
+2.16.2
+
