@@ -14,12 +14,23 @@ config BR2_arc770d
 config BR2_archs38
 	bool "ARC HS38"
 
+config BR2_archs38_full
+        bool "ARC HS38 with Quad MAC & FPU"
+        help
+          Fully featured ARC HS with additional support for
+           - Dual- and quad multiply and MC oprations
+           - Double-precision FPU
+
+          It corresponds to "hs38_slc_full" ARC HS template in
+          ARChitect.
+
+
 endchoice
 
 # Choice of atomic instructions presence
 config BR2_ARC_ATOMIC_EXT
 	bool "Atomic extension (LLOCK/SCOND instructions)"
-	default y if BR2_arc770d || BR2_archs38
+	default y if BR2_arc770d || BR2_archs38 || BR2_archs38_full
 
 config BR2_ARCH
 	default "arc"	if BR2_arcle
@@ -37,10 +48,12 @@ config BR2_GCC_TARGET_CPU
 	default "arc700" if BR2_arc750d
 	default "arc700" if BR2_arc770d
 	default "archs"	 if BR2_archs38
+        default "hs38_linux"     if BR2_archs38_full
+
 
 config BR2_READELF_ARCH_NAME
 	default "ARCompact"	if BR2_arc750d || BR2_arc770d
-	default "ARCv2"		if BR2_archs38
+	default "ARCv2"		if BR2_archs38 || BR2_archs38_full
 
 choice
 	prompt "MMU Page Size"
@@ -60,7 +73,7 @@ choice
 
 config BR2_ARC_PAGE_SIZE_4K
 	bool "4KB"
-	depends on BR2_arc770d || BR2_archs38
+	depends on BR2_arc770d || BR2_archs38 || BR2_archs38_full
 
 config BR2_ARC_PAGE_SIZE_8K
 	bool "8KB"
@@ -70,7 +83,7 @@ config BR2_ARC_PAGE_SIZE_8K
 
 config BR2_ARC_PAGE_SIZE_16K
 	bool "16KB"
-	depends on BR2_arc770d || BR2_archs38
+	depends on BR2_arc770d || BR2_archs38 || BR2_archs38_full
 
 endchoice
 
