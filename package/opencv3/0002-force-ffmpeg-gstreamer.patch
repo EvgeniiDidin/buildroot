@@ -1,0 +1,113 @@
+From 381fdbc9c1a8e1e1e6ae63614ef994e2452bccd3 Mon Sep 17 00:00:00 2001
+From: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+Date: Tue, 17 Sep 2019 18:27:12 +0300
+Subject: [PATCH] Force ffmpeg/gstreamer...
+
+Signed-off-by: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+---
+ CMakeLists.txt                  | 23 +++++++++++++++++++++++
+ cmake/OpenCVFindLibsVideo.cmake | 40 +++++++++-------------------------------
+ 2 files changed, 32 insertions(+), 31 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c7c76ec..16d856a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1248,6 +1248,18 @@ if(WITH_1394 OR HAVE_DC1394)
+     status("    DC1394:" "NO")
+   endif()
+ endif()
++set (FFMPEG_libavcodec_FOUND YES)
++set (FFMPEG_libavformat_FOUND YES)
++set (FFMPEG_libavutil_FOUND YES)
++set (FFMPEG_libswscale_FOUND YES)
++set (FFMPEG_libavresample_FOUND YES)
++set (HAVE_FFMPEG YES)
++
++
++set (HAVE_GSTREAMER YES)
++
++set (HAVE_LIBV4L YES)
++
+ 
+ if(WITH_FFMPEG OR HAVE_FFMPEG)
+   if(OPENCV_FFMPEG_USE_FIND_PACKAGE)
+@@ -1546,3 +1558,14 @@ include(cmake/OpenCVPackaging.cmake)
+ # This should be the last command
+ ocv_cmake_dump_vars("" TOFILE "CMakeVars.txt")
+ ocv_cmake_eval(DEBUG_POST ONCE)
++set (FFMPEG_libavcodec_FOUND YES)
++set (FFMPEG_libavformat_FOUND YES)
++set (FFMPEG_libavutil_FOUND YES)
++set (FFMPEG_libswscale_FOUND YES)
++set (FFMPEG_libavresample_FOUND YES)
++set (HAVE_FFMPEG YES)
++
++
++set (HAVE_GSTREAMER YES)
++
++set (HAVE_LIBV4L YES)
+diff --git a/cmake/OpenCVFindLibsVideo.cmake b/cmake/OpenCVFindLibsVideo.cmake
+index b9d15c3..3ec2b7d 100644
+--- a/cmake/OpenCVFindLibsVideo.cmake
++++ b/cmake/OpenCVFindLibsVideo.cmake
+@@ -213,33 +213,11 @@ endif(WITH_XIMEA)
+ # --- FFMPEG ---
+ ocv_clear_vars(HAVE_FFMPEG)
+ if(WITH_FFMPEG)  # try FFmpeg autodetection
+-  if(OPENCV_FFMPEG_USE_FIND_PACKAGE)
+-    if(OPENCV_FFMPEG_USE_FIND_PACKAGE STREQUAL "1" OR OPENCV_FFMPEG_USE_FIND_PACKAGE STREQUAL "ON")
+-      set(OPENCV_FFMPEG_USE_FIND_PACKAGE "FFMPEG")
+-    endif()
+-    find_package(${OPENCV_FFMPEG_USE_FIND_PACKAGE}) # Required components: AVCODEC AVFORMAT AVUTIL SWSCALE
+-    if(FFMPEG_FOUND OR FFmpeg_FOUND)
+       set(HAVE_FFMPEG TRUE)
+-    else()
+-      message(STATUS "Can't find FFmpeg via find_package(${OPENCV_FFMPEG_USE_FIND_PACKAGE})")
+-    endif()
+-  elseif(WIN32 AND NOT ARM AND NOT OPENCV_FFMPEG_SKIP_DOWNLOAD)
+-    include("${OpenCV_SOURCE_DIR}/3rdparty/ffmpeg/ffmpeg.cmake")
+-    download_win_ffmpeg(FFMPEG_CMAKE_SCRIPT)
+-    if(FFMPEG_CMAKE_SCRIPT)
+-      set(HAVE_FFMPEG TRUE)
+-      set(HAVE_FFMPEG_WRAPPER 1)
+-      include("${FFMPEG_CMAKE_SCRIPT}")
+-    endif()
+-  elseif(PKG_CONFIG_FOUND)
+-    ocv_check_modules(FFMPEG libavcodec libavformat libavutil libswscale)
+-    ocv_check_modules(FFMPEG_libavresample libavresample)
+-    if(FFMPEG_libavresample_FOUND)
+-      ocv_append_build_options(FFMPEG FFMPEG_libavresample)
+-    endif()
+-  else()
+-    message(STATUS "Can't find ffmpeg - 'pkg-config' utility is missing")
+-  endif()
++      #set( FFMPEG_INCLUDE_DIRS /home/didin/work/tmp/hsdk_qt5/output/host/arc-buildroot-linux-gnu/sysroot/usr/include/)
++      set(FFMPEG_INCLUDE_DIRS /usr/include)
++      set(FFMPEG_LIBRARY_DIRS $ENV{PWD}/../../../../output/host/arc-buildroot-linux-gnu/sysroot/usr/lib)
++      set(FFMPEG_LIBRARIES -lx264 -lswscale -lavformat -lavutil -lswresample -lavcodec)
+ endif()
+ if(HAVE_FFMPEG
+     AND NOT HAVE_FFMPEG_WRAPPER
+@@ -252,13 +230,13 @@ if(HAVE_FFMPEG
+                   "-DLINK_LIBRARIES:STRING=${FFMPEG_LIBRARIES}"
+       OUTPUT_VARIABLE TRY_OUT
+   )
+-  if(NOT __VALID_FFMPEG)
++#  if(NOT __VALID_FFMPEG)
+     #message(FATAL_ERROR "FFMPEG: test check build log:\n${TRY_OUT}")
+-    message(STATUS "WARNING: Can't build ffmpeg test code")
+-    set(HAVE_FFMPEG FALSE)
+-  else()
++#    message(STATUS "WARNING: Can't build ffmpeg test code")
++#    set(HAVE_FFMPEG FALSE)
++#  else()
+     ocv_append_build_options(VIDEOIO FFMPEG)
+-  endif()
++#  endif()
+ endif()
+ 
+ # --- VideoInput/DirectShow ---
+-- 
+2.16.2
+
