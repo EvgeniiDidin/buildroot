@@ -1,0 +1,73 @@
+From 4d3e5a164084a7ae4ea428fe000a688667111b36 Mon Sep 17 00:00:00 2001
+From: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+Date: Tue, 17 Sep 2019 15:52:53 +0300
+Subject: [PATCH] ARC:disable tls
+
+Signed-off-by: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+---
+ src/corelib/global/qcompilerdetection.h | 5 -----
+ src/corelib/thread/qthread_unix.cpp     | 2 --
+ 2 files changed, 7 deletions(-)
+
+diff --git a/src/corelib/global/qcompilerdetection.h b/src/corelib/global/qcompilerdetection.h
+index 038ad03..8950eb2 100644
+--- a/src/corelib/global/qcompilerdetection.h
++++ b/src/corelib/global/qcompilerdetection.h
+@@ -483,7 +483,6 @@
+  *  N2118 N2844 N3053 Q_COMPILER_RVALUE_REFS            __cpp_rvalue_references = 200610
+  *  N1720           Q_COMPILER_STATIC_ASSERT            __cpp_static_assert = 200410
+  *  N2258           Q_COMPILER_TEMPLATE_ALIAS
+- *  N2659           Q_COMPILER_THREAD_LOCAL
+  *  N2660           Q_COMPILER_THREADSAFE_STATICS
+  *  N2765           Q_COMPILER_UDL                      __cpp_user_defined_literals = 200809
+  *  N2442           Q_COMPILER_UNICODE_STRINGS          __cpp_unicode_literals = 200710
+@@ -566,7 +565,6 @@
+ #      define Q_COMPILER_INHERITING_CONSTRUCTORS
+ #      ifndef Q_OS_OSX
+ //       C++11 thread_local is broken on OS X (Clang doesn't support it either)
+-#        define Q_COMPILER_THREAD_LOCAL
+ #      endif
+ #      define Q_COMPILER_UDL
+ #    endif
+@@ -700,7 +698,6 @@
+ #    endif
+ #    if __has_feature(cxx_thread_local)
+ #      if !defined(__FreeBSD__) /* FreeBSD clang fails on __cxa_thread_atexit */
+-#        define Q_COMPILER_THREAD_LOCAL
+ #      endif
+ #    endif
+ #    if __has_feature(cxx_user_literals)
+@@ -826,7 +823,6 @@
+ #      define Q_COMPILER_ALIGNAS
+ #      define Q_COMPILER_ALIGNOF
+ #      define Q_COMPILER_INHERITING_CONSTRUCTORS
+-#      define Q_COMPILER_THREAD_LOCAL
+ #      if Q_CC_GNU > 408 || __GNUC_PATCHLEVEL__ >= 1
+ #         define Q_COMPILER_REF_QUALIFIERS
+ #      endif
+@@ -915,7 +911,6 @@
+ #      define Q_COMPILER_NOEXCEPT
+ #      define Q_COMPILER_RANGE_FOR
+ #      define Q_COMPILER_REF_QUALIFIERS
+-#      define Q_COMPILER_THREAD_LOCAL
+ // Broken, see QTBUG-47224 and https://connect.microsoft.com/VisualStudio/feedback/details/1549785
+ //#      define Q_COMPILER_THREADSAFE_STATICS
+ #      define Q_COMPILER_UDL
+diff --git a/src/corelib/thread/qthread_unix.cpp b/src/corelib/thread/qthread_unix.cpp
+index 8c35d49..e4d2e24 100644
+--- a/src/corelib/thread/qthread_unix.cpp
++++ b/src/corelib/thread/qthread_unix.cpp
+@@ -111,10 +111,8 @@ enum { ThreadPriorityResetFlag = 0x80000000 };
+ 
+ #if defined(Q_OS_LINUX) && defined(__GLIBC__) && (defined(Q_CC_GNU) || defined(Q_CC_INTEL)) && !defined(QT_LINUXBASE)
+ /* LSB doesn't have __thread, https://lsbbugs.linuxfoundation.org/show_bug.cgi?id=993 */
+-#define HAVE_TLS
+ #endif
+ #if defined(Q_CC_XLC) || defined (Q_CC_SUN)
+-#define HAVE_TLS
+ #endif
+ 
+ #ifdef HAVE_TLS
+-- 
+2.16.2
+
