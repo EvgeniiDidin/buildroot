@@ -1,0 +1,26 @@
+From 91c4ade47c82d25e3d832d2ab7cf015abbc1c66d Mon Sep 17 00:00:00 2001
+From: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+Date: Mon, 23 Sep 2019 14:01:38 +0300
+Subject: [PATCH] use-root-dev-mmcblk0p2-on-HSDK
+
+Signed-off-by: Evgeniy Didin <Evgeniy.Didin@synopsys.com>
+---
+ arch/arc/boot/dts/hsdk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
+index e8ca66c9c4e8..e9e4d1c9b4a2 100644
+--- a/arch/arc/boot/dts/hsdk.dts
++++ b/arch/arc/boot/dts/hsdk.dts
+@@ -19,7 +19,7 @@
+ 	#size-cells = <2>;
+ 
+ 	chosen {
+-		bootargs = "earlycon=uart8250,mmio32,0xf0005000,115200n8 console=ttyS0,115200n8 debug print-fatal-signals=1 uio_pdrv_genirq.of_id=generic-uio";
++		bootargs = "earlycon=uart8250,mmio32,0xf0005000,115200n8 console=ttyS0,115200n8 debug print-fatal-signals=1 uio_pdrv_genirq.of_id=generic-uio root=/dev/mmcblk0p2 rootwait";
+ 	};
+ 
+ 	aliases {
+-- 
+2.16.2
+

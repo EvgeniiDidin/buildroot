@@ -1,0 +1,123 @@
+From 79c38b9d50bc5f0962fe8ff728a02ba6ed10f4d5 Mon Sep 17 00:00:00 2001
+From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Date: Mon, 23 Sep 2019 12:50:33 +0300
+Subject: [PATCH 2/3] ARC: HSDK: add EV UIO deice tree node
+
+Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+---
+ arch/arc/boot/dts/hsdk.dts | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
+index 69075ce2fd6d..e8ca66c9c4e8 100644
+--- a/arch/arc/boot/dts/hsdk.dts
++++ b/arch/arc/boot/dts/hsdk.dts
+@@ -19,7 +19,7 @@
+ 	#size-cells = <2>;
+ 
+ 	chosen {
+-		bootargs = "earlycon=uart8250,mmio32,0xf0005000,115200n8 console=ttyS0,115200n8 debug print-fatal-signals=1";
++		bootargs = "earlycon=uart8250,mmio32,0xf0005000,115200n8 console=ttyS0,115200n8 debug print-fatal-signals=1 uio_pdrv_genirq.of_id=generic-uio";
+ 	};
+ 
+ 	aliases {
+@@ -74,7 +74,7 @@
+ 	idu_intc: idu-interrupt-controller {
+ 		compatible = "snps,archs-idu-intc";
+ 		interrupt-controller;
+-		#interrupt-cells = <1>;
++		#interrupt-cells = <2>;
+ 		interrupt-parent = <&cpu_intc>;
+ 	};
+ 
+@@ -121,7 +121,7 @@
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x5000 0x100>;
+ 			clock-frequency = <33330000>;
+-			interrupts = <6>;
++			interrupts = <6 4>;
+ 			baud = <115200>;
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+@@ -190,7 +190,7 @@
+ 			#interrupt-cells = <1>;
+ 			compatible = "snps,dwmac";
+ 			reg = <0x8000 0x2000>;
+-			interrupts = <10>;
++			interrupts = <10 4>;
+ 			interrupt-names = "macirq";
+ 			phy-mode = "rgmii";
+ 			snps,pbl = <32>;
+@@ -219,7 +219,7 @@
+ 		ohci@60000 {
+ 			compatible = "snps,hsdk-v1.0-ohci", "generic-ohci";
+ 			reg = <0x60000 0x100>;
+-			interrupts = <15>;
++			interrupts = <15 4>;
+ 			resets = <&cgu_rst HSDK_USB_RESET>;
+ 			dma-coherent;
+ 		};
+@@ -227,7 +227,7 @@
+ 		ehci@40000 {
+ 			compatible = "snps,hsdk-v1.0-ehci", "generic-ehci";
+ 			reg = <0x40000 0x100>;
+-			interrupts = <15>;
++			interrupts = <15 4>;
+ 			resets = <&cgu_rst HSDK_USB_RESET>;
+ 			dma-coherent;
+ 		};
+@@ -240,7 +240,7 @@
+ 			card-detect-delay = <200>;
+ 			clocks = <&mmcclk_biu>, <&mmcclk_ciu>;
+ 			clock-names = "biu", "ciu";
+-			interrupts = <12>;
++			interrupts = <12 4>;
+ 			bus-width = <4>;
+ 			dma-coherent;
+ 		};
+@@ -250,7 +250,7 @@
+ 			reg = <0x20000 0x100>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			interrupts = <16>;
++			interrupts = <16 4>;
+ 			num-cs = <2>;
+ 			reg-io-width = <4>;
+ 			clocks = <&input_clk>;
+@@ -289,13 +289,13 @@
+ 				 <&gpu_core_clk>,
+ 				 <&gpu_core_clk>;
+ 			clock-names = "bus", "reg", "core", "shader";
+-			interrupts = <28>;
++			interrupts = <28 4>;
+ 		};
+ 
+ 		dmac: dmac@80000 {
+ 			compatible = "snps,axi-dma-1.01a";
+ 			reg = <0x80000 0x400>;
+-			interrupts = <27>;
++			interrupts = <27 4>;
+ 			clocks = <&dmac_core_clk>, <&dmac_cfg_clk>;
+ 			clock-names = "core-clk", "cfgr-clk";
+ 
+@@ -308,6 +308,17 @@
+ 		};
+ 	};
+ 
++	uioEV: uio@0x00000000 {
++		compatible = "generic-uio";
++		reg = <	0x0 0x40000000 0x0 0x2000
++			0x0 0x42000000 0x0 0x80000
++			0x0 0x30000000 0x0 0x10000000
++			0x0 0x20000000 0x0 0x10000000>;
++		reg-names = "arconnect", "csm", "ev_shared_mem", "ev_code_mem";
++		interrupt-parent = <&idu_intc>;
++		interrupts = < 34 1 >; /* GPIO[2] from HAPS */
++	};
++
+ 	memory@80000000 {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+-- 
+2.21.0
+
