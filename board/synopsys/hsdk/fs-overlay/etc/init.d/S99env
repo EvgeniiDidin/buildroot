@@ -6,4 +6,5 @@ export  XDG_RUNTIME_DIR=/root/weston
 export QT_QPA_PLATFORM=wayland-egl
 export MESA_LOADER_DRIVER_OVERRIDE=imx-drm
 export  XDG_RUNTIME_DIR=/root/weston
-weston --tty=61  --config=/root/weston/weston.ini  &
+#weston --tty=61  --config=/root/weston/weston.ini  --idle-time=0 &
+weston --tty=61 --config=/root/weston/weston.ini --idle-time=0 --use-pixman &
